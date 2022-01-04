@@ -3,8 +3,8 @@
 namespace Jwohlfert23\LaravelApiTransformers\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Orchestra\Testbench\TestCase as Orchestra;
 use Jwohlfert23\LaravelApiTransformers\LaravelApiTransformersServiceProvider;
+use Orchestra\Testbench\TestCase as Orchestra;
 
 class TestCase extends Orchestra
 {

@@ -1,4 +1,6 @@
-<?php namespace Jwohlfert23\LaravelApiTransformers\Serializers;
+<?php
+
+namespace Jwohlfert23\LaravelApiTransformers\Serializers;
 
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Support\Collection;

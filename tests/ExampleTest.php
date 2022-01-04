@@ -1,12 +1,12 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 use Jwohlfert23\LaravelApiTransformers\BaseTransformer;
 use Jwohlfert23\LaravelApiTransformers\Database\Models;
-use Mattiasgeniar\PhpunitQueryCountAssertions\AssertsQueryCounts;
 use Jwohlfert23\LaravelApiTransformers\DefaultTransformer;
+use Mattiasgeniar\PhpunitQueryCountAssertions\AssertsQueryCounts;
 
 class OrderTransformer extends BaseTransformer
 {
@@ -47,6 +47,7 @@ class CustomerTransformer extends BaseTransformer
     {
         $array = $customer->toArray();
         $array['testing'] = 123;
+
         return $array;
     }
 
@@ -193,4 +194,3 @@ it('handles a paginator', function () {
 
     $this->assertQueryCountMatches(2);
 });
-

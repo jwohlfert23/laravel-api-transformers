@@ -4,7 +4,6 @@ namespace Jwohlfert23\LaravelApiTransformers;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Jwohlfert23\LaravelApiTransformers\Commands\LaravelApiTransformersCommand;
 
 class LaravelApiTransformersServiceProvider extends PackageServiceProvider
 {

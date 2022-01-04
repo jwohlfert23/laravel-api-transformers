@@ -1,4 +1,6 @@
-<?php namespace Jwohlfert23\LaravelApiTransformers;
+<?php
+
+namespace Jwohlfert23\LaravelApiTransformers;
 
 use Illuminate\Contracts\Support\Arrayable;
 

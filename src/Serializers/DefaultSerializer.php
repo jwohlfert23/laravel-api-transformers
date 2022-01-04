@@ -1,4 +1,6 @@
-<?php namespace Laravel\SerializableClosure\Serializers;
+<?php
+
+namespace Laravel\SerializableClosure\Serializers;
 
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Support\Collection;
@@ -14,7 +16,7 @@ class DefaultSerializer implements SerializerContract
     public function collection(Collection $collection): array
     {
         return [
-            'data' => $collection->all()
+            'data' => $collection->all(),
         ];
     }
 

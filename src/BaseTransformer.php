@@ -3,8 +3,8 @@
 namespace Jwohlfert23\LaravelApiTransformers;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -19,6 +19,7 @@ abstract class BaseTransformer
     public function setIncludeFromRequest(array $relations): self
     {
         $this->includeFromRequest = $relations;
+
         return $this;
     }
 
@@ -37,6 +38,7 @@ abstract class BaseTransformer
         if (! $transformer) {
             $transformer = new DefaultTransformer();
         }
+
         return new RelationInclude($model, $relation, $transformer);
     }
 
@@ -46,6 +48,7 @@ abstract class BaseTransformer
             $transformer = new DefaultTransformer();
         }
         $this->maybeSetIncludeFromRequest($transformer);
+
         return $transformer->process($item);
     }
 
@@ -55,12 +58,14 @@ abstract class BaseTransformer
             $transformer = new DefaultTransformer();
         }
         $this->maybeSetIncludeFromRequest($transformer);
-        return $items->map(fn($item) => $transformer->process($item))->all();
+
+        return $items->map(fn ($item) => $transformer->process($item))->all();
     }
 
     protected function getIncludes(): array
     {
         $fromRequest = array_keys(Arr::only($this->includeFromRequest, $this->availableIncludes));
+
         return array_merge($this->defaultIncludes, $fromRequest);
     }
 
@@ -81,6 +86,7 @@ abstract class BaseTransformer
                 };
             }
         }
+
         return $array;
     }
 

@@ -16,12 +16,14 @@ class LaravelApiTransformers
         foreach (array_filter(explode(',', $dot)) as $relation) {
             Arr::set($arr, $relation, true);
         }
+
         return $arr;
     }
 
     protected function getIncludesFromRequest()
     {
         $key = config('api-transformers.request_include_key', 'include');
+
         return $this->parseRelationships(request($key, ''));
     }
 
@@ -67,7 +69,7 @@ class LaravelApiTransformers
         }
 
         return [
-            'data' => $collection->map(fn($item) => $transformer->process($item))->toArray()
+            'data' => $collection->map(fn ($item) => $transformer->process($item))->toArray(),
         ];
     }
 
@@ -80,7 +82,7 @@ class LaravelApiTransformers
             ->setIncludeFromRequest($this->getIncludesFromRequest())
             ->processQuery($builder);
 
-        return $builder->paginate($count)->through(fn($item) => $transformer->process($item))->toArray();
+        return $builder->paginate($count)->through(fn ($item) => $transformer->process($item))->toArray();
     }
 
     public function paginator(Paginator $paginator, BaseTransformer $transformer = null)
