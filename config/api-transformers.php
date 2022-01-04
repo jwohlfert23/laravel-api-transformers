@@ -1,5 +1,5 @@
 <?php
-// config for Jwohlfert23/LaravelApiTransformers
-return [
 
+return [
+    'request_include_key' => 'include'
 ];

@@ -17,7 +17,6 @@ class LaravelApiTransformersServiceProvider extends PackageServiceProvider
          */
         $package
             ->name('laravel-api-transformers')
-            ->hasConfigFile()
-            ->hasCommand(LaravelApiTransformersCommand::class);
+            ->hasConfigFile();
     }
 }

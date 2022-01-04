@@ -13,4 +13,9 @@ class Order extends Model
     {
         return $this->belongsTo(Customer::class);
     }
+
+    public function salesRep()
+    {
+        return $this->belongsTo(User::class, 'sales_rep_id');
+    }
 }

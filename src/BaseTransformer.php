@@ -4,6 +4,7 @@ namespace Jwohlfert23\LaravelApiTransformers;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -31,19 +32,28 @@ abstract class BaseTransformer
         }
     }
 
-    public function relation(Model $model, string $relation, BaseTransformer $transformer)
+    public function relation(Model $model, string $relation, BaseTransformer $transformer = null)
     {
+        if (! $transformer) {
+            $transformer = new DefaultTransformer();
+        }
         return new RelationInclude($model, $relation, $transformer);
     }
 
-    public function item($item, BaseTransformer $transformer)
+    public function item($item, BaseTransformer $transformer = null)
     {
+        if (! $transformer) {
+            $transformer = new DefaultTransformer();
+        }
         $this->maybeSetIncludeFromRequest($transformer);
         return $transformer->process($item);
     }
 
-    public function collection(Collection $items, BaseTransformer $transformer)
+    public function collection(Collection $items, BaseTransformer $transformer = null)
     {
+        if (! $transformer) {
+            $transformer = new DefaultTransformer();
+        }
         $this->maybeSetIncludeFromRequest($transformer);
         return $items->map(fn($item) => $transformer->process($item))->all();
     }
@@ -59,26 +69,41 @@ abstract class BaseTransformer
         return 'include'.Str::studly($include);
     }
 
+    protected function getToEagerLoad(Model $model): array
+    {
+        $array = [];
+        foreach ($this->getIncludes() as $include) {
+            $this->isIncluding = $include;
+            $res = $this->{$this->getMethodForInclude($include)}($model);
+            if ($res instanceof RelationInclude) {
+                $array[$res->getRelationName()] = function ($q) use ($res) {
+                    $res->getTransformer()->processQuery($q->getQuery());
+                };
+            }
+        }
+        return $array;
+    }
+
     public function processQuery(Builder $builder)
     {
         if (method_exists($this, 'transformQuery')) {
             $this->transformQuery($builder);
         }
-
-        $array = [];
-        foreach ($this->getIncludes() as $include) {
-            $this->isIncluding = $include;
-            $res = $this->{$this->getMethodForInclude($include)}($builder->getModel());
-            if ($res instanceof RelationInclude) {
-                $array[$res->getRelationName()] = fn($q) => $res->getTransformer()->processQuery($q->getQuery());
-            }
-        }
-
-        $builder->with($array);
+        $builder->with($this->getToEagerLoad($builder->getModel()));
     }
 
+    public function loadMissing(Model|EloquentCollection $model): void
+    {
+        if ($model instanceof EloquentCollection) {
+            $first = $model->first();
+            if (! $first) {
+                return;
+            }
+        }
+        $model->loadMissing($this->getToEagerLoad($first ?? $model));
+    }
 
-    public function process(Model $model): array
+    public function process($model): array
     {
         $array = $this->transform($model);
 
@@ -88,7 +113,7 @@ abstract class BaseTransformer
             $res = $this->{$this->getMethodForInclude($include)}($model);
 
             if ($res instanceof RelationInclude) {
-                $results = $res->getRelation()->getResults();
+                $results = $model->{$res->getRelationName()};
                 $method = $results instanceof Collection ? 'collection' : 'item';
                 $array[$include] = $this->{$method}($results, $res->getTransformer());
             } else {
